@@ -1,0 +1,53 @@
+#cloud-config
+autoinstall:
+  version: 1
+  locale: en_US
+  keyboard:
+    layout: de
+#  identity:
+#    install-server: yes
+#    allow-pw: yes
+#    disable_root: false
+#    #ssh_quiet_keygen: true
+#    authorized_keys: y:
+#    hostname: ubuntu-server
+#    username: ubuntu
+#    password: "ubuntu@12345"  
+  ssh:
+#  "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDUMq/gFhNzjGOG0XFaBcWCH00CJqBSLLJ+8JBrAZChM6znzVai9bBnPaf21FRbU+aoepRtdU/sfWc5wtcXYVNMBO8b9yK8FkV+2CzrvYPUi8b7PUaTqlWtPrY/nm7/z+H3MWTnbanLNryd/pRMfAWylIt0tDlEpPYjReuVxkj04d8733regd7q2D40heWAp6kwyb3FHk4hihH+hYgh9btkqC/2Mwp5EXqmfj7k5NiCXW40uJ2POCLl4FE9fSl38ghlQMLvglpBHPRoQ/JeNMvG5FsZ7F8YacayRsuQxX0Ch79lsSpYhPDFpjNtVy3U27SnoGHhpzWAJZ27dC1ZlmJoSG9xEymFrAgmXb4Ry3c2r/2GRq45zh5DA8ranncfNVbw15O7tnFgL63CMcfsChIcKehU3BDXslLs0hBVIubzIWcuBfRNJS50hTQJd5WQGRCHUgAvqt8W6OvNBmukJu8PQEWNmd9W6f8IbASXOUKMMeHgFoFpJ4mTj83H3U2pEBU= root@dockertest"
+    allow_public_ssh_keys: true
+    install-server: true
+    allow-pw: true
+    disable_root: true
+#    ssh_quiet_keygen: true
+  packages:
+    - qemu-guest-agent
+  # - ca-certificates
+  # - nmap
+  # - wget
+  #  - curl
+  #  - sshpass
+    - sudo
+    - openssh-server
+  storage:
+    layout:
+      name: direct
+    swap:
+      size: 0
+  late-commands:
+    - curtin in-target --target=/target -- systemctl start qemu-guest-agent.service
+    - curtin in-target --target=/target -- systemctl enable qemu-guest-agent.service
+  user-data:
+    package_upgrade: false
+    #disable_root : false
+    timezone: Europe/London
+    users:
+      - name: avish
+        groups: [sudo, adm]
+        lock-passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        shell: /bin/bash
+        passwd: avish@123
+        # - or -
+      #  ssh_authorized_keys:
+      #    - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDUMq/gFhNzjGOG0XFaBcWCH00CJqBSLLJ+8JBrAZChM6znzVai9bBnPaf21FRbU+aoepRtdU/sfWc5wtcXYVNMBO8b9yK8FkV+2CzrvYPUi8b7PUaTqlWtPrY/nm7/z+H3MWTnbanLNryd/pRMfAWylIt0tDlEpPYjReuVxkj04d8733regd7q2D40heWAp6kwyb3FHk4hihH+hYgh9btkqC/2Mwp5EXqmfj7k5NiCXW40uJ2POCLl4FE9fSl38ghlQMLvglpBHPRoQ/JeNMvG5FsZ7F8YacayRsuQxX0Ch79lsSpYhPDFpjNtVy3U27SnoGHhpzWAJZ27dC1ZlmJoSG9xEymFrAgmXb4Ry3c2r/2GRq45zh5DA8ranncfNVbw15O7tnFgL63CMcfsChIcKehU3BDXslLs0hBVIubzIWcuBfRNJS50hTQJd5WQGRCHUgAvqt8W6OvNBmukJu8PQEWNmd9W6f8IbASXOUKMMeHgFoFpJ4mTj83H3U2pEBU= root@dockertest"
