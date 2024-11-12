@@ -1,0 +1,29 @@
+#image:
+#  name: iac:v1
+#  entrypoint:
+#    - '/usr/bin/env'
+#    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+
+before_script:
+  - packer version
+  - packer init ubuntu-server-focal.pkr.hcl
+
+stages:
+  - validate
+  - apply
+
+validate:
+  tags:
+    - acl
+  stage: validate
+  script:
+    - packer validate -var-file='variables.pkr.hcl' ubuntu-server-focal.pkr.hcl
+
+apply:
+  tags:
+    - acl
+  stage: apply
+  script:
+    - PACKER_LOG=1 packer build  -var-file='variables.pkr.hcl' ubuntu-server-focal.pkr.hcl
+
+

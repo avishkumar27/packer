@@ -1,0 +1,47 @@
+#cloud-config
+autoinstall:
+  version: 1
+  locale: en_US
+  keyboard:
+    layout: de
+    variant: us
+  identity:
+    hostname: "ubuntu-server"
+    username: "<username>"
+    password: "$6$exDY1mhS4KUYCE/2$zmn9ToZwTKLhCw.b4/b.ZRTIZM30JZ4QrOQ2aOXJ8yk96xpcCof0kxKwuX1kqLG/ygbJ1f8wxED22bTL4F46P0"  
+  ssh:
+   #- ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAg/6AWG4p21xBuZQd7a7H7QutU+ott7/wqGV665cZuepQG/27qlPNHiZxtnTESySSJ6aQft2lTpEYkdZiwNeAXy4CjAy2MOfTWN/dN5qaIOG2Bdf+xiT261cW0kS7yuDD27X8K1Y+8B/fZjs8Pzr1hMBY4F13PJBPrpCRFq/O2AzoIfBR6fqBO5yrsy1jD3OX1zXGTRsbRvjG1hBpLr0DfLxx+NTDm4XCldCdYF/438Izf8Btw+F2x3sAwQS+k/+wSKLJjEpS3vJUZnQ5mGXuR8TxDtkAsLS6DBQ0V4lawsVkM8rm3VE1D+3vtdby7mY/HOGO3yeuDV6kPcYPw5AfsQ== rsa-key-20240509
+    allow_public_ssh_keys: true
+    install-server: true
+    allow-pw: true
+    disable_root: false
+    ssh_quiet_keygen: false
+    allow_password_authentication: true
+  packages:
+    - qemu-guest-agent
+    - sed
+    - cloud-init
+    - sshpass
+    - sudo
+    - openssh-server
+  storage:
+    layout:
+      name: direct
+    swap:
+      size: 0
+  late-commands:
+    #- curtin in-target --target=/target -- systemctl start qemu-guest-agent.service
+    #- curtin in-target --target=/target -- systemctl enable qemu-guest-agent.service
+    #- curtin in-target --target=/target -- sed -i -e 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+    #- curtin in-target --target=/target -- sed -i -e 's/^#\?PermitRootLogin.*/PermitRootLogin yes/g' /etc/ssh/sshd_config
+  user-data:
+    package_upgrade: true
+    disable_root : false
+    timezone: Asia/Kolakata
+    users:
+      - name: root      
+        shell: /bin/bash
+        #sudo: ALL=(ALL) NOPASSWD:ALL
+        #groups: [adm, sudo]
+        ssh_authorized_keys: 
+         - <your public ssh key>
